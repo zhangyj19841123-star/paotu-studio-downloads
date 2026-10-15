@@ -40,3 +40,13 @@ Mac 目标系统为 macOS 12.3 及以上，需选择匹配芯片的版本。当�
 GitHub 自动生成的 “Source code” 压缩包只包含本下载站文件，不是软件安装包。下载软件请使用上述平台入口。
 
 © 2026 曼陀罗。保留所有权利。软件业务代码采用闭源发布；第三方组件遵循各自许可证。
+
+## 操作教程与文档
+
+网站“操作教程”区域提供约 2 分 16 秒的点击播放视频，以及操作说明 PDF 的在线查阅和下载。
+
+- [观看操作教程](https://zhangyj19841123-star.github.io/paotu-studio-downloads/#tutorial)
+- [操作说明 PDF](assets/paotu-studio-operation-guide.pdf)
+- [教程资料 SHA-256](checksums/tutorial-20261015-SHA256SUMS.txt)
+
+视频保存在 v0.5.2 Release 的独立教程附件中，不加入普通 Git 历史。原有软件版本、安装包及授权要求保持不变。

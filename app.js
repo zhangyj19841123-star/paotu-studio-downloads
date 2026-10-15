@@ -2,6 +2,28 @@
   "use strict";
 
   const preview = new URLSearchParams(window.location.search).get("preview") === "1";
+
+  const tutorialPlay = document.getElementById("tutorial-play");
+  const tutorialVideo = document.getElementById("tutorial-video");
+  const tutorialNote = document.getElementById("tutorial-playback-note");
+  if (tutorialPlay && tutorialVideo) {
+    tutorialPlay.addEventListener("click", () => {
+      // Attach the media only after a visitor chooses to play it.
+      if (!tutorialVideo.getAttribute("src")) {
+        tutorialVideo.src = tutorialVideo.dataset.src;
+      }
+      tutorialPlay.hidden = true;
+      tutorialVideo.hidden = false;
+      tutorialVideo.focus();
+      tutorialVideo.play().catch(() => {
+        // Native controls remain available when the browser delays playback.
+      });
+    });
+    tutorialVideo.addEventListener("error", () => {
+      if (tutorialNote) tutorialNote.hidden = false;
+    });
+  }
+
   if (preview) {
     document.getElementById("preview-banner").hidden = false;
     document.querySelectorAll("a[data-download]").forEach((link) => {

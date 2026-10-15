@@ -1,0 +1,3 @@
+34cf1aefbf33eaba1c84ed43afc77b67fcd719fe0d2e96bce29aca1681c2acf7  PaotuStudio-Tutorial-20261015.mp4
+190a67fb19c721e7b1b2c840d243db32cc01565b3847adfa3cf74792d53c02b9  paotu-studio-operation-guide.pdf
+22cf66e96766fe34d6721764d935f6c62bfb5e044646f3bbf06e48564e85d94f  tutorial-poster.jpg

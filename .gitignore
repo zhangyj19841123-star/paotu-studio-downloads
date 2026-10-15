@@ -18,9 +18,12 @@
 !assets/
 assets/*
 !assets/logo.svg
+!assets/tutorial-poster.jpg
+!assets/paotu-studio-operation-guide.pdf
 !release-notes/
 release-notes/*
 !release-notes/v*.md
 !checksums/
 checksums/*
 !checksums/v*-SHA256SUMS.txt
+!checksums/tutorial-20261015-SHA256SUMS.txt

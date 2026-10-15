@@ -1,0 +1,26 @@
+# 默认只允许公开资料；安装包只作为 Release 附件上传。
+*
+!.gitignore
+!.nojekyll
+!README.md
+!INSTALL.md
+!CHANGELOG.md
+!TERMS.md
+!INSTALL.html
+!TERMS.html
+!THIRD_PARTY.md
+!THIRD_PARTY.html
+!CHANGELOG.html
+!index.html
+!styles.css
+!app.js
+!releases.json
+!assets/
+assets/*
+!assets/logo.svg
+!release-notes/
+release-notes/*
+!release-notes/v*.md
+!checksums/
+checksums/*
+!checksums/v*-SHA256SUMS.txt

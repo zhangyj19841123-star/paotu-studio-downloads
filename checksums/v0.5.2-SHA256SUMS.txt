@@ -1,0 +1,3 @@
+df891c04836af4e332aea8cdbcebb123fb2d91fcabb1414441e93e9d92ac3b13  PaotuStudio-windows-x64.zip
+98dab13b4ad98ccdfccb93076f0632f577aafa2bddb7ece711cf742774a938e1  PaotuStudio-macos-arm64.dmg
+814317f81bc9205e07f8c908c1bc382d50ba368b487cdbfbcc2468a6f89ee51b  PaotuStudio-macos-x86_64.dmg

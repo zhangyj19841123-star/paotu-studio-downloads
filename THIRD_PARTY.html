@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>第三方组件与动态库替换 · 跑图工坊</title><link rel="icon" href="assets/logo.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css"><script src="app.js" defer></script></head>
+<body><div class="preview-banner" id="preview-banner" hidden>本地发布预览 · 安装包下载入口待确认发布后上线。</div><a class="skip-link" href="#main">跳转到主要内容</a><header class="site-header"><div class="container header-inner"><a class="brand" href="index.html"><img src="assets/logo.svg" width="40" height="40" alt=""><span>跑图工坊 <small>Paotu Studio</small></span></a><nav aria-label="主导航"><a href="index.html#downloads">软件下载</a><a href="INSTALL.html">安装帮助</a></nav></div></header><main class="container document-page" id="main"><a class="text-link" href="index.html">← 返回软件下载</a><article><h1>第三方组件、对应源码与动态库替换</h1>
+<p>适用发行系列：跑图工坊 Windows x64 0.5.2、macOS Apple Silicon / Intel 0.5.1。本文面向希望修改第三方组件的开发者；普通用户无需安装 Python、编译器或执行下列命令。</p>
+<h2>许可与材料位置</h2>
+<p>跑图工坊使用 Qt、PySide、Shiboken 等组件。相应组件的开源许可路线包含 LGPLv3；各文件的准确许可、例外及版权声明以随包原文为准。跑图工坊业务代码保持闭源，不因此向业务代码授予开源许可。</p>
+<p>发行包包含 <code>第三方许可证/</code> 和 <code>第三方库对应源码/</code>。前者保存完整声明、GPL / LGPL 原文及组件清单，后者保存 Qt / PySide 对应版本的上游源码原始归档和 <code>SHA256SUMS</code>。请保留这些材料；官网链接不能代替已经附带的源码与声明。</p>
+<p>Mac 对应五个归档：QtBase、QtSvg、QtImageFormats、QtTranslations 和 PySide / Shiboken 6.8.3。Windows 对应六个归档：上述同名 Qt 5.15.2 模块、QtDeclarative 5.15.2，以及 PySide / Shiboken 5.15.2.1。Windows 的 PySide 公共运行库依赖 QtQml，因此即使软件没有导入 Qml Python 模块，也保留 Qt5Qml.dll 及其对应 QtDeclarative 源码。不能把 Mac 的五个归档用于代替 Windows 的六个归档。</p>
+<div class="document-table"><table><thead><tr><th>发行平台</th><th>Python / 绑定 / Qt</th><th>应用内声明位置</th></tr></thead><tbody>
+<tr><td>Windows x64</td><td>CPython 3.8.20、PySide2 / Shiboken2 5.15.2.1、Qt 5.15.2</td><td><code>PaotuStudio/_internal/legal/</code></td></tr>
+<tr><td>macOS 两架构</td><td>CPython 3.12、PySide6-Essentials / Shiboken6 6.8.3、Qt 6.8.3</td><td><code>跑图工坊.app/Contents/Resources/legal/</code></td></tr>
+</tbody></table></div>
+<p>其他组件（如 CPython、Pillow、NumPy、SciPy 及所含原生库）的许可证也在随包清单中。Windows 的 Microsoft 运行库受其自身许可和平台限制约束，不因 Qt 或 Python 的许可而取得其他授权。</p>
+<p>本软件的使用条款不限制第三方许可证允许的复制、修改、替换以及为调试此类修改而进行的逆向工程。替换兼容第三方库无需软件提供者签发库修改密钥。跑图工坊正常业务使用仍适用已有授权；第三方许可证独立授予的权利优先适用于对应组件。参见 <a href="https://doc.qt.io/qt-6.8/lgpl.html">LGPLv3 原文</a> 和随包完整许可。</p>
+<h2>选择兼容的替换版本</h2>
+<p>请先复制整个应用目录，在副本中操作，保留原安装包。仅从可信来源取得组件；修改库可能改变安全性、稳定性、最低操作系统要求和图像输出。</p>
+<ul>
+<li>使用与目标包相同的 CPU 架构、Qt 主次版本和公开接口。建议从同一补丁版本源码开始修改，不混用 Qt 5 与 Qt 6。</li>
+<li>PySide 与 Shiboken 使用同一版本、同一 C++ ABI 和相容的 Python ABI。单独升级其中一个可能导致启动失败。</li>
+<li>Windows 使用 x64、Release、MSVC 兼容 ABI；不要用 MinGW 构建的 Qt 替换此 MSVC 系列的库，也不要把 Debug 库混入 Release 包。保持对 Python 3.8 的兼容。</li>
+<li>Mac 使用 <code>arm64</code> 或 <code>x86_64</code> 对应切片；也可使用同时包含所需切片的 universal2 库。保持框架构建方式、<code>@rpath</code> / <code>@loader_path</code> 链接关系及符号链接，最低部署目标不高于应用声明的 macOS 12.3。</li>
+<li>插件必须与 Qt 库配套。若改变 Qt 构建选项或内部接口，连同所有相依 Qt 框架、PySide / Shiboken 动态库和插件一起替换，并检查它们的依赖。</li>
+</ul>
+<p>同版本的预编译候选可从 <a href="https://pypi.org/project/PySide2/5.15.2.1/#files">PySide2 5.15.2.1</a>、<a href="https://pypi.org/project/shiboken2/5.15.2.1/#files">Shiboken2 5.15.2.1</a>、<a href="https://pypi.org/project/PySide6-Essentials/6.8.3/#files">PySide6-Essentials 6.8.3</a> 和 <a href="https://pypi.org/project/shiboken6/6.8.3/#files">Shiboken6 6.8.3</a> 取得。wheel 是 ZIP 格式，可在独立目录解包后提取兼容原生库，不需要改动系统 Python。应核对 PyPI 提供的 SHA-256 和 wheel 的 <code>RECORD</code>。</p>
+<h2>Windows：实际动态库位置与启动</h2>
+<p>下列路径以完整解压的便携包为起点。不要只复制 EXE；其 <code>_internal</code> 目录和依赖必须保留。</p>
+<div class="document-table"><table><thead><tr><th>组件</th><th>相对路径</th></tr></thead><tbody>
+<tr><td>Qt 动态库</td><td><code>PaotuStudio/_internal/PySide2/Qt5Core.dll</code>、<code>Qt5Gui.dll</code>、<code>Qt5Network.dll</code>、<code>Qt5Widgets.dll</code>、<code>Qt5Svg.dll</code>、<code>Qt5Qml.dll</code>，以及同目录实际存在的相依 Qt DLL</td></tr>
+<tr><td>PySide 绑定</td><td><code>PaotuStudio/_internal/PySide2/QtCore.pyd</code>、<code>QtGui.pyd</code>、<code>QtNetwork.pyd</code>、<code>QtWidgets.pyd</code>、<code>QtSvg.pyd</code>、<code>pyside2.abi3.dll</code></td></tr>
+<tr><td>Shiboken 运行组件</td><td><code>PaotuStudio/_internal/shiboken2/shiboken2.pyd</code>、<code>shiboken2.abi3.dll</code></td></tr>
+<tr><td>Qt 插件</td><td><code>PaotuStudio/_internal/PySide2/plugins/</code>；包括 <code>platforms/qwindows.dll</code> 及实际保留的图片、样式等插件</td></tr>
+</tbody></table></div>
+<p>退出所有跑图工坊进程，将新库复制到副本中上表的原位置；不要更改文件名。仅修改 QtCore 且保持接口兼容时可以只替换 Qt5Core.dll；较大修改应替换配套组件。不要覆盖 Python、跑图工坊业务模块、系统运行库、授权资料或无关文件。保存替换前后文件摘要，便于恢复和识别实际加载的版本。</p>
+<p>可在命令提示符使用以下方法在临时用户状态中检查授权窗口能否出现。将示例路径换成你的副本位置；这不会把正式授权复制到测试位置。</p>
+<pre><code>set &quot;PAOTU_TEST_STATE=%TEMP%\PaotuLibraryTest-%RANDOM%&quot;
+mkdir &quot;%PAOTU_TEST_STATE%\Roaming&quot;
+mkdir &quot;%PAOTU_TEST_STATE%\Local&quot;
+set &quot;APPDATA=%PAOTU_TEST_STATE%\Roaming&quot;
+set &quot;LOCALAPPDATA=%PAOTU_TEST_STATE%\Local&quot;
+set &quot;PYTHONHOME=&quot;
+set &quot;PYTHONPATH=&quot;
+set &quot;QT_PLUGIN_PATH=&quot;
+set &quot;QT_QPA_PLATFORM_PLUGIN_PATH=&quot;
+set &quot;QT_DEBUG_PLUGINS=1&quot;
+&quot;C:\PaotuLibraryTest\PaotuStudio\PaotuStudio.exe&quot;</code></pre>
+<p>新的临时状态按未激活处理；出现授权窗口只证明启动及界面加载，不代表已经完成批量出图验证。业务出图测试应在经许可的隔离测试环境完成，不要公开申请码或激活码。需核验 Windows 7 兼容性时，应使用有必要系统补丁的真实 Windows 7 SP1 x64 机器；在 Wine 或较新 Windows 启动不等于已验证 Windows 7。</p>
+<h2>Mac：实际动态库位置、签名与启动</h2>
+<p>在 Finder 中复制整个 <code>.app</code>，保留框架与资源的符号链接。下面的路径从副本 <code>跑图工坊.app</code> 开始。</p>
+<div class="document-table"><table><thead><tr><th>组件</th><th>相对路径</th></tr></thead><tbody>
+<tr><td>Qt 框架</td><td><code>Contents/Frameworks/PySide6/Qt/lib/QtCore.framework/Versions/A/QtCore</code>；同目录还包括 QtGui、QtWidgets、QtNetwork、QtDBus、QtSvg 框架</td></tr>
+<tr><td>PySide 原生绑定</td><td><code>Contents/Frameworks/PySide6/QtCore.abi3.so</code>、<code>QtGui.abi3.so</code>、<code>QtWidgets.abi3.so</code>、<code>QtNetwork.abi3.so</code>、<code>QtDBus.abi3.so</code>、<code>libpyside6.abi3.6.8.dylib</code></td></tr>
+<tr><td>Shiboken 运行组件</td><td><code>Contents/Frameworks/shiboken6/Shiboken.abi3.so</code>、<code>libshiboken6.abi3.6.8.dylib</code></td></tr>
+<tr><td>Qt 插件</td><td><code>Contents/Frameworks/PySide6/Qt/plugins/</code>，包括 <code>platforms/libqcocoa.dylib</code> 及图片、样式、TLS 等插件</td></tr>
+</tbody></table></div>
+<p>同名框架的 <code>Versions/Current</code>、框架顶层入口和 <code>Contents/Resources</code> 中相关链接均需保留。Qt 框架使用版本目录 <code>A</code>；不要只复制脱离框架目录的文件。</p>
+<p>本应用打包时把 wheel 中形如 <code>@rpath/QtCore.framework/Versions/A/QtCore</code> 的引用重定位为 <code>@rpath/QtCore</code>，并保留应用框架目录中的入口链接。因此从 wheel 或自行构建结果复制库时，必须在副本内同步安装名称、依赖名称和运行搜索路径；不能原样覆盖后就假设能加载：</p>
+<ol>
+<li>替换前，对副本中每个目标文件记录 <code>otool -D</code>、<code>otool -L</code> 及 <code>otool -l</code> 中的 <code>LC_RPATH</code>；对照新文件，记录 CPU 架构与部署目标。</li>
+<li>universal2 文件可保留所需两种切片，或先用 <code>lipo 新文件 -thin arm64 -output 临时文件</code> 提取目标切片（Intel 用 <code>x86_64</code>）。不要对已经只有一个切片的文件重复 thin。</li>
+<li>用 <code>install_name_tool -id</code> 设置动态库的 <code>LC_ID_DYLIB</code>，用 <code>-change 旧引用 新引用</code> 修改相依组件引用；针对不同的 <code>LC_RPATH</code> 用 <code>-rpath 旧路径 新路径</code> / <code>-add_rpath</code> / <code>-delete_rpath</code> 保持副本原布局可解析。只修改本次新库，不改系统文件。若预留头部空间不足，应以适当链接选项重建新库，而不是修改错误偏移。</li>
+</ol>
+<p>例如，新的 QtCore 框架本体应采用 <code>@rpath/QtCore</code>；新的 QtGui 本体或 QtCore Python 绑定若仍引用完整框架名称，应作相应重定位。这里 <code>incoming</code> 是已准备的新库目录：</p>
+<pre><code>install_name_tool -id &#x27;@rpath/QtCore&#x27; incoming/QtCore
+install_name_tool -change &#x27;@rpath/QtCore.framework/Versions/A/QtCore&#x27; \
+  &#x27;@rpath/QtCore&#x27; incoming/QtGui
+install_name_tool -change &#x27;@rpath/QtCore.framework/Versions/A/QtCore&#x27; \
+  &#x27;@rpath/QtCore&#x27; incoming/QtCore.abi3.so</code></pre>
+<p>对 QtGui、QtWidgets、QtNetwork、QtDBus、QtSvg 及相依插件逐项应用同一对应关系。PySide / Shiboken 也需对照原文件的 <code>@rpath/libpyside6.abi3.6.8.dylib</code>、<code>@rpath/libshiboken6.abi3.6.8.dylib</code> 与搜索路径；例如原 PySide 绑定使用 <code>@loader_path/..</code> 搜索应用框架目录。以原副本中实际记录为准，不向不存在的目录添加搜索项。复制后再次用 <code>otool -L</code> / <code>otool -l</code> 检查，确认所有非系统依赖都能在副本内部解析，避免加载构建电脑上的绝对路径。</p>
+<p>修改内容会使原签名失效。对于自行修改的本地测试副本，可用系统工具重新 ad-hoc 签名并检查；这无需跑图工坊签名私钥，也不会取得 Apple Developer ID 或公证。以下命令只作用于指定副本；<code>--deep</code> 在此用于本地修改验证，不是正式发行签名流程。</p>
+<pre><code>PAOTU_TEST_APP=&quot;$HOME/Desktop/PaotuLibraryTest/跑图工坊.app&quot;
+codesign --force --deep --sign - &quot;$PAOTU_TEST_APP&quot;
+codesign --verify --deep --strict &quot;$PAOTU_TEST_APP&quot;</code></pre>
+<p>请在单独的 macOS 测试用户账户运行副本，避免触碰原账户的设置或授权。本版本使用用户目录内的应用支持位置保存授权状态，仅设置 XDG 环境变量不足以隔离这些资料。把副本放在该测试账户可写的目录中，不要直接修改只读 DMG。以下命令在该独立测试账户执行，仅清除本次进程的 Python / Qt 搜索变量，不改变系统配置。</p>
+<pre><code>env -u PYTHONHOME -u PYTHONPATH -u QT_PLUGIN_PATH -u QT_QPA_PLATFORM_PLUGIN_PATH \
+  QT_DEBUG_PLUGINS=1 &quot;$PAOTU_TEST_APP/Contents/MacOS/PaotuStudio&quot;</code></pre>
+<p>此隔离副本通常会显示未激活的授权窗口。不要为加载修改版库而关闭系统整体安全保护，也不要在公开材料中放入授权状态。重新分发你修改的第三方组件时，应保留许可证、提供适用的对应源码及修改说明，并另外遵守完整应用的分发权限。</p>
+<h2>从随包源码修改、编译并安装第三方库</h2>
+<p>下面提供可执行的构建起点，针对第三方 Qt / PySide / Shiboken，不需要跑图工坊业务源码或签发私钥。构建环境需自行准备；它与普通软件的免 Python 安装使用方式不同。官方 wheel 的完整编译配置未全部复现，故这些命令不是逐字节复现原 wheel 的承诺。</p>
+<p>先对归档执行 SHA-256 核验，再解包到独立目录。Mac 可在源码目录执行 <code>shasum -a 256 -c SHA256SUMS</code>。Windows 可用 PowerShell <code>Get-FileHash -Algorithm SHA256</code> 对照 <code>SHA256SUMS</code>。保留原始归档、修改补丁、实际配置输出及构建日志。</p>
+<h3>Windows / Qt 5.15.2 与 PySide2 5.15.2.1</h3>
+<p>需要 x64 MSVC 开发命令提示符、相容 Windows SDK、Python 3.8 x64 开发环境、CMake、Ninja 或 NMake、Perl，以及 PySide2 源码要求的 libclang。具体依赖以归档中的 <code>README.pyside2.md</code>、<code>README.shiboken2.md</code>、CMakeLists 和帮助为准。不要混入 MinGW ABI。</p>
+<ol>
+<li>解包 <code>qtbase-everywhere-src-5.15.2.tar.xz</code>、<code>qtsvg-everywhere-src-5.15.2.tar.xz</code>、<code>qtimageformats-everywhere-src-5.15.2.tar.xz</code> 和 <code>qtdeclarative-everywhere-src-5.15.2.tar.xz</code>。在源码中完成你的修改。</li>
+<li>假设源码在 <code>C:\QtLibraryTest\src</code>，构建与安装均在此独立目录中。使用 x64 MSVC 命令提示符：</li>
+</ol>
+<pre><code>mkdir C:\QtLibraryTest\build-base
+cd /d C:\QtLibraryTest\build-base
+call C:\QtLibraryTest\src\qtbase-everywhere-src-5.15.2\configure.bat -opensource -confirm-license -release -shared -platform win32-msvc -prefix C:\QtLibraryTest\qt -nomake tests -nomake examples -opengl dynamic
+nmake
+nmake install
+mkdir C:\QtLibraryTest\build-svg
+cd /d C:\QtLibraryTest\build-svg
+C:\QtLibraryTest\qt\bin\qmake.exe C:\QtLibraryTest\src\qtsvg-everywhere-src-5.15.2\qtsvg.pro
+nmake
+nmake install
+mkdir C:\QtLibraryTest\build-imageformats
+cd /d C:\QtLibraryTest\build-imageformats
+C:\QtLibraryTest\qt\bin\qmake.exe C:\QtLibraryTest\src\qtimageformats-everywhere-src-5.15.2\qtimageformats.pro
+nmake
+nmake install
+mkdir C:\QtLibraryTest\build-declarative
+cd /d C:\QtLibraryTest\build-declarative
+C:\QtLibraryTest\qt\bin\qmake.exe C:\QtLibraryTest\src\qtdeclarative-everywhere-src-5.15.2\qtdeclarative.pro
+nmake
+nmake install</code></pre>
+<ol>
+<li>解包 <code>pyside-setup-opensource-src-5.15.2.1.tar.gz</code>。此归档顶层目录名是 <code>pyside-setup-opensource-src-5.15.2</code>，不能仅凭目录名把其版本判作 5.15.2。准备 Python 3.8 x64 的独立开发虚拟环境和 libclang 后，在该源码顶层运行：</li>
+</ol>
+<pre><code>set &quot;LLVM_INSTALL_DIR=C:\QtLibraryTest\libclang&quot;
+python setup.py install --ignore-git --qmake=C:\QtLibraryTest\qt\bin\qmake.exe --parallel=4 --limited-api=yes --module-subset=Core,Gui,Widgets,Network,Svg</code></pre>
+<p>该构建入口会处理 PySide2 和 Shiboken2。先在独立 Python 开发环境测试导入及绘制，再把生成的相容原生组件按上表替换到完整应用副本。Qt <code>bin</code> 的 DLL、<code>plugins</code> 的实际使用插件以及绑定 / Shiboken 的 DLL、PYD 应一起匹配。QtDeclarative 构建可能还会生成 QtQuick 等组件；不要据此把原应用未使用的模块或插件加入发行副本，应按实际依赖闭包选择，包括 pyside2.abi3.dll 所需的 Qt5Qml.dll。依赖查看工具应确认只从副本和合法系统位置加载。</p>
+<h3>Mac / Qt、PySide6 与 Shiboken6 6.8.3</h3>
+<p>需要 Qt 6.8 支持的 Xcode / macOS SDK、CMake、Ninja、Python 3.12 开发环境以及匹配的 libclang。分别构建 <code>arm64</code> 和 <code>x86_64</code>，或按官方说明构建 universal2；目标系统下限与所有相依库必须匹配。参考 <a href="https://doc.qt.io/qt-6.8/macos-building.html">Qt macOS 构建说明</a> 及归档内 README。</p>
+<p>假设工作目录为 <code>~/QtLibraryTest</code>，已将 QtBase、QtSvg、QtImageFormats 的 6.8.3 归档解包到 <code>src/</code>。下面以 <code>arm64</code> 为例；Intel 应改为 <code>x86_64</code>，并使用支持该架构的工具链。</p>
+<pre><code>PAOTU_QT_WORK=&quot;$HOME/QtLibraryTest&quot;
+PAOTU_QT_ARCH=&quot;arm64&quot;
+mkdir -p &quot;$PAOTU_QT_WORK/build-base&quot;
+cd &quot;$PAOTU_QT_WORK/build-base&quot;
+&quot;$PAOTU_QT_WORK/src/qtbase-everywhere-src-6.8.3/configure&quot; \
+  -opensource -confirm-license -release -shared \
+  -prefix &quot;$PAOTU_QT_WORK/qt&quot; -nomake tests -nomake examples \
+  -- -DCMAKE_OSX_ARCHITECTURES=&quot;$PAOTU_QT_ARCH&quot; -DCMAKE_OSX_DEPLOYMENT_TARGET=12.3
+cmake --build . --parallel 4
+cmake --install .
+mkdir -p &quot;$PAOTU_QT_WORK/build-svg&quot;
+cd &quot;$PAOTU_QT_WORK/build-svg&quot;
+&quot;$PAOTU_QT_WORK/qt/bin/qt-configure-module&quot; \
+  &quot;$PAOTU_QT_WORK/src/qtsvg-everywhere-src-6.8.3&quot;
+cmake --build &quot;$PAOTU_QT_WORK/build-svg&quot; --parallel 4
+cmake --install &quot;$PAOTU_QT_WORK/build-svg&quot;
+mkdir -p &quot;$PAOTU_QT_WORK/build-imageformats&quot;
+cd &quot;$PAOTU_QT_WORK/build-imageformats&quot;
+&quot;$PAOTU_QT_WORK/qt/bin/qt-configure-module&quot; \
+  &quot;$PAOTU_QT_WORK/src/qtimageformats-everywhere-src-6.8.3&quot;
+cmake --build &quot;$PAOTU_QT_WORK/build-imageformats&quot; --parallel 4
+cmake --install &quot;$PAOTU_QT_WORK/build-imageformats&quot;</code></pre>
+<p>在已准备好 Python 开发虚拟环境的 <code>pyside-setup-everywhere-src-6.8.3</code> 源码顶层：</p>
+<pre><code>export LLVM_INSTALL_DIR=&quot;$HOME/QtLibraryTest/libclang&quot;
+python setup.py install --ignore-git --standalone --limited-api=yes \
+  --qtpaths=&quot;$HOME/QtLibraryTest/qt/bin/qtpaths6&quot; --parallel=4 \
+  --macos-arch=arm64 --macos-deployment-target=12.3 \
+  --module-subset=Core,Gui,Widgets,Network,DBus</code></pre>
+<p>Intel 应对应修改架构参数。此入口生成匹配的 PySide6 与 Shiboken6；保留 QtSvg 框架及 qsvg 插件，即使应用包没有 QtSvg Python 绑定。构建后先测试第三方组件，再按上表替换副本内的组件、保持框架布局和符号链接、核对动态链接并重新 ad-hoc 签名。参见 <a href="https://doc.qt.io/qtforpython-6.8/building_from_source/index.html">Qt for Python 源码构建说明</a>。</p>
+<h3>配置、插件和翻译材料</h3>
+<p>上面的最小构建没有启用所有可选系统库或复现 wheel 的所有配置。要保留某个图片插件，必须在 configure 阶段满足其编解码依赖，并检查配置摘要；缺失的可选依赖不能靠复制不匹配插件补救。Qt SVG 及图片插件应与同批 Qt 构建一起安装。</p>
+<p>随包 QtTranslations 源归档供对应翻译材料使用；如需修改 <code>.ts</code> 并重新生成 <code>.qm</code>，使用匹配版本 QtTools 的 <code>lrelease</code>（该工具及其构建依赖可从 Qt 官方取得），保留源文件与修改记录。没有修改的翻译文件可以继续使用其对应原始材料。若增加包内原来没有的 Qt 模块，应同时补充该模块的对应源码、许可证和依赖材料。</p>
+<h3>运行验证与证据范围</h3>
+<p>动态库路径与同版本组件替换可分别验证；同字节文件覆盖只验证替换位置，没有证明修改源码重建成功。Python 第三方初始化支持代码可能存放在冻结归档中；本文的相容原生库替换步骤不表示已替换这些初始化代码。若修改初始化行为或公开接口，应另行安排冻结归档中的对应第三方代码重组及验证，而不是混入不兼容版本。</p>
+<p>验证应包括实际加载路径、库版本、界面启动、授权状态保持、预览及 JPG / PNG 输出。只在临时状态启动和显示授权窗口，不足以证明生产出图或所有平台兼容；当前发行说明应如实列出已执行和未执行的测试，不以另一架构或 Wine 测试替代真实设备测试。</p>
+<p>本说明不声称已从修改后的 Qt / PySide 源码重建出所有目标架构的发行库，也不声称逐字节复现官方 wheel。随包源码、许可、动态库布局和本文构建 / 替换步骤应整体保留；具体版本的验证结果以该 Release 说明为准。</p>
+<h2>官方来源</h2>
+<ul>
+<li><a href="https://download.qt.io/archive/qt/5.15/5.15.2/submodules/">Qt 5.15.2 子模块源码</a></li>
+<li><a href="https://download.qt.io/official_releases/QtForPython/pyside2/PySide2-5.15.2.1-src/">PySide2 5.15.2.1 源码</a></li>
+<li><a href="https://download.qt.io/archive/qt/6.8/6.8.3/submodules/">Qt 6.8.3 子模块源码</a></li>
+<li><a href="https://download.qt.io/official_releases/QtForPython/pyside6/PySide6-6.8.3-src/">PySide6 6.8.3 源码</a></li>
+<li><a href="https://doc.qt.io/qt-6.8/configure-options.html">Qt 6.8 configure 选项</a></li>
+<li><a href="https://learn.microsoft.com/en-us/cpp/windows/universal-crt-deployment?view=msvc-170">Microsoft UCRT 部署说明</a></li>
+</ul></article></main><footer class="site-footer container"><p>© 2026 曼陀罗。保留所有权利。第三方组件依各自许可证保留相应权利。</p></footer></body></html>

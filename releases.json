@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "product": "Paotu Studio",
+  "name": "跑图工坊",
+  "catalog_tag": "v0.5.2",
+  "release_title": "Windows 0.5.2 / macOS 0.5.1",
+  "copyright_holder": "曼陀罗",
+  "release_url": "https://github.com/zhangyj19841123-star/paotu-studio-downloads/releases/latest",
+  "history_url": "https://github.com/zhangyj19841123-star/paotu-studio-downloads/releases",
+  "platforms": {
+    "windows": {
+      "version": "0.5.2",
+      "architecture": "x86_64",
+      "format": "zip",
+      "size_bytes": 194633779,
+      "size_label": "185.6 MiB",
+      "minimum_os": "Windows 7 SP1 x64（需必要系统更新）",
+      "sha256": "df891c04836af4e332aea8cdbcebb123fb2d91fcabb1414441e93e9d92ac3b13",
+      "url": "https://github.com/zhangyj19841123-star/paotu-studio-downloads/releases/latest/download/PaotuStudio-windows-x64.zip",
+      "signed": false,
+      "real_windows_hardware_tested": false,
+      "distribution_revision": "public-r1",
+      "release_channel": "test"
+    },
+    "macos_arm64": {
+      "version": "0.5.1",
+      "architecture": "arm64",
+      "format": "dmg",
+      "size_bytes": 164693979,
+      "size_label": "157.1 MiB",
+      "minimum_os": "macOS 12.3",
+      "sha256": "98dab13b4ad98ccdfccb93076f0632f577aafa2bddb7ece711cf742774a938e1",
+      "url": "https://github.com/zhangyj19841123-star/paotu-studio-downloads/releases/latest/download/PaotuStudio-macos-arm64.dmg",
+      "signature": "ad-hoc app / unsigned dmg",
+      "developer_id_signed": false,
+      "notarized": false,
+      "distribution_revision": "public-r2"
+    },
+    "macos_x86_64": {
+      "version": "0.5.1",
+      "architecture": "x86_64",
+      "format": "dmg",
+      "size_bytes": 183142829,
+      "size_label": "174.7 MiB",
+      "minimum_os": "macOS 12.3",
+      "sha256": "814317f81bc9205e07f8c908c1bc382d50ba368b487cdbfbcc2468a6f89ee51b",
+      "url": "https://github.com/zhangyj19841123-star/paotu-studio-downloads/releases/latest/download/PaotuStudio-macos-x86_64.dmg",
+      "signature": "ad-hoc app / unsigned dmg",
+      "developer_id_signed": false,
+      "notarized": false,
+      "distribution_revision": "public-r2"
+    }
+  },
+  "publication_status": "public"
+}

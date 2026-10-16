@@ -15,7 +15,8 @@
     link.addEventListener("click", () => {
       if (!downloadFeedback || !downloadMessage) return;
       const platform = link.closest("[data-platform]")?.dataset.platform;
-      downloadMessage.textContent = `已请求${platformNames[platform] || "软件"}下载，请查看浏览器的下载列表。若未开始，可打开版本下载页重试。`;
+      const filename = new URL(link.href).pathname.split("/").pop();
+      downloadMessage.textContent = `已请求 ${platformNames[platform] || "软件"} 下载：${filename}。请查看浏览器下载列表；若未开始，可打开版本下载页重试。`;
       downloadFeedback.hidden = false;
       // Keep the native link action: the browser handles the file in a new tab.
     });

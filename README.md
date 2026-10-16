@@ -10,11 +10,11 @@
 
 | 平台 | 软件版本 | 发行形式 | 下载 |
 | --- | --- | --- | --- |
-| Windows x64 | 0.5.2 | 便携 ZIP，完整解压后运行 | [Windows 下载](https://github.com/zhangyj19841123-star/paotu-studio-downloads/releases/latest/download/PaotuStudio-windows-x64.zip) |
-| Mac Apple Silicon | 0.5.1 | DMG | [Apple Silicon 下载](https://github.com/zhangyj19841123-star/paotu-studio-downloads/releases/latest/download/PaotuStudio-macos-arm64.dmg) |
-| Mac Intel | 0.5.1 | DMG | [Intel 下载](https://github.com/zhangyj19841123-star/paotu-studio-downloads/releases/latest/download/PaotuStudio-macos-x86_64.dmg) |
+| Windows x64 | 0.5.2 | 便携 ZIP，完整解压后运行 | [Windows 下载](https://github.com/zhangyj19841123-star/paotu-studio-downloads/releases/download/v0.5.2/PaotuStudio-windows-x64.zip) |
+| Mac Apple Silicon | 0.5.1 | DMG | [Apple Silicon 下载](https://github.com/zhangyj19841123-star/paotu-studio-downloads/releases/download/v0.5.2/PaotuStudio-macos-arm64.dmg) |
+| Mac Intel | 0.5.1 | DMG | [Intel 下载](https://github.com/zhangyj19841123-star/paotu-studio-downloads/releases/download/v0.5.2/PaotuStudio-macos-x86_64.dmg) |
 
-各平台按实际软件版本标注。下载文件采用固定名称，实际版本、大小及 SHA-256 见 [版本清单](releases.json)。需要锁定旧版本时，请从历史 Release 下载。
+各平台按实际软件版本标注。下载文件采用固定名称，网页使用已核验的版本直达链接，实际版本、大小及 SHA-256 见 [版本清单](releases.json)。需要锁定旧版本时，请从历史 Release 下载。
 
 ## 主要功能
 

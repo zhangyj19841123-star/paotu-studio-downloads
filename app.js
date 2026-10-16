@@ -1,7 +1,25 @@
 (() => {
   "use strict";
 
-  const preview = new URLSearchParams(window.location.search).get("preview") === "1";
+  const localHost = ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname);
+  const preview = localHost && new URLSearchParams(window.location.search).get("preview") === "1";
+
+  const downloadFeedback = document.getElementById("download-feedback");
+  const downloadMessage = document.getElementById("download-message");
+  const platformNames = {
+    windows: "Windows 版",
+    macos_arm64: "Mac 芯片版",
+    macos_x86_64: "Mac Intel 版"
+  };
+  document.querySelectorAll("a[data-download]").forEach((link) => {
+    link.addEventListener("click", () => {
+      if (!downloadFeedback || !downloadMessage) return;
+      const platform = link.closest("[data-platform]")?.dataset.platform;
+      downloadMessage.textContent = `已请求${platformNames[platform] || "软件"}下载，请查看浏览器的下载列表。若未开始，可打开版本下载页重试。`;
+      downloadFeedback.hidden = false;
+      // Keep the native link action: the browser handles the file in a new tab.
+    });
+  });
 
   const tutorialPlay = document.getElementById("tutorial-play");
   const tutorialVideo = document.getElementById("tutorial-video");
@@ -25,17 +43,8 @@
   }
 
   if (preview) {
-    document.getElementById("preview-banner").hidden = false;
-    document.querySelectorAll("a[data-download]").forEach((link) => {
-      link.setAttribute("aria-describedby", "preview-banner");
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
-        const banner = document.getElementById("preview-banner");
-        banner.textContent = "当前是本地预览，下载尚未发布。正式上线后，此入口将下载对应平台安装包。";
-        banner.setAttribute("role", "status");
-        banner.scrollIntoView({ block: "start", behavior: "smooth" });
-      });
-    });
+    const banner = document.getElementById("preview-banner");
+    if (banner) banner.hidden = false;
     document.querySelectorAll("a[href]").forEach((link) => {
       const url = new URL(link.href, window.location.href);
       if (url.origin === window.location.origin && url.pathname.endsWith(".html")) {
@@ -46,7 +55,7 @@
   }
 
   // Local static metadata only. Missing metadata leaves the HTML defaults intact.
-  fetch("releases.json", { credentials: "omit" })
+  fetch("releases.json", { credentials: "omit", cache: "no-cache" })
     .then((response) => {
       if (!response.ok) throw new Error("Release metadata unavailable");
       return response.json();

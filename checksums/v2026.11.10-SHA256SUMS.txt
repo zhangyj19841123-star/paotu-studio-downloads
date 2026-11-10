@@ -1,0 +1,2 @@
+c04933fd45298908e5a9ba35f2743926725c9c36b8eae834748ab687c542c027  PaotuStudio-0.7.10-windows-x64-public.zip
+2d7c0a6d8548a596298060e88aac7a75be0ef7ac07e7f1df5753ac8c0d2f8d30  PaotuStudio-0.7.9-macos-arm64-public.dmg
